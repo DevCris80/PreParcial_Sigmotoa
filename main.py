@@ -7,8 +7,9 @@ from db import lista_pokemon
 app = FastAPI()
 
 @app.get("/show_all_pokemon", response_model=list[Pokemon])
-def show_all_pokemon():
-    return lista_pokemon
+def show_all_pokemon(skip: int = 0, limit: int = 10):
+    end = skip + limit
+    return lista_pokemon[skip:end]
 
 @app.get("/show_one_pokemon/{name}", response_model= Pokemon)
 def show_one_pokemon(name:str):
