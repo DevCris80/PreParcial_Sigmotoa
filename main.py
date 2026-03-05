@@ -16,14 +16,14 @@ def show_one_pokemon(name:str):
     for pokemon in lista_pokemon:
         if pokemon.name.lower() == name.lower():
             return pokemon
-    return HTTPException(status_code=404, detail=f"No se ha encontrado el pokemon {name}")
+    raise HTTPException(status_code=404, detail=f"No se ha encontrado el pokemon {name}")
 
 @app.get("/show_pokemon_by_ID/{id}")
 def show_pokemon_by_id(id: int):
     for pokemon in lista_pokemon:
         if pokemon.id == id:
             return pokemon
-    return HTTPException(status_code=404, detail=f"No existe el pokemon")
+    raise HTTPException(status_code=404, detail=f"No existe el pokemon")
 
 @app.get("/pokemon_battle")
 def pokemon_battle(pokemon_1: str, pokemon_2: str):
@@ -79,7 +79,7 @@ def pokemon_ordered_by(order_by:str = "id", ascendente: bool = True):
     valid_fields = Pokemon.__fields__.keys()
 
     if order_by not in valid_fields:
-        return HTTPException(status_code=400, detail=f"No existe el campo use: {list(valid_fields)}")
+        raise HTTPException(status_code=400, detail=f"No existe el campo use: {list(valid_fields)}")
 
     ordenado = sorted(lista_pokemon, key=lambda x: x[order_by], reverse= not ascendente)
 
