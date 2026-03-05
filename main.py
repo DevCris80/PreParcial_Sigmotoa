@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from model import Pokemon
+from model import Pokemon, MessageBattle
 
 lista_pokemon: list[Pokemon] = []
 
@@ -27,11 +27,53 @@ def show_pokemon_by_id(id: int):
 
 @app.get("/pokemon_battle")
 def pokemon_battle(pokemon_1: str, pokemon_2: str):
-    pokemon1 = show_one_pokemon(pokemon_1)
-    pokemon2 = show_one_pokemon(pokemon_2)
-    message = {}
-    while True:
-        break
+    p1_obj = show_one_pokemon(pokemon_1)
+    p2_obj = show_one_pokemon(pokemon_2)
+
+    hp1 = p1_obj.life
+    hp2 = p2_obj.life
+    
+    historial: list[MessageBattle] = []
+    turno = 1
+
+    while hp1 > 0 and hp2 > 0:
+        hp2 -= p1_obj.attack
+        historial.append(
+            MessageBattle(
+            turno=turno, 
+            mensaje=f"{p1_obj.name} ataca a {p2_obj.name}. Vida de {p2_obj.name}: {max(0, hp2)}"
+            )
+        )
+        
+        if hp2 <= 0:
+            historial.append(
+                MessageBattle(
+                    turno=turno, 
+                    mensaje=f"¡{p2_obj.name} se ha debilitado! {p1_obj.name} es el ganador."
+                )
+            )
+            break
+
+        hp1 -= p2_obj.attack
+        historial.append(
+            MessageBattle(
+            turno=turno, 
+            mensaje=f"{p2_obj.name} contraataca a {p1_obj.name}. Vida de {p1_obj.name}: {max(0, hp1)}"
+            )
+        )
+
+        if hp1 <= 0:
+            historial.append(
+                MessageBattle(
+                    turno=turno,
+                    mensaje=f"¡{p1_obj.name} se ha debilitado! {p2_obj.name} es el ganador."
+                    )
+                )
+            break
+        
+        turno += 1
+
+    return historial
 
 
 @app.get("/pokemon_ordered_by")

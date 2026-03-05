@@ -6,3 +6,7 @@ class Pokemon(BaseModel):
     attack: float
     life: float
     type: str
+
+class MessageBattle(BaseModel):
+    turno: int
+    mensaje: str
