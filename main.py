@@ -73,17 +73,23 @@ def pokemon_battle(pokemon_1: str, pokemon_2: str):
     return historial
 
 
-@app.get("/pokemon_ordered_by")
-def pokemon_ordered_by(order_by:str = "id", ascendente: bool = True):
-
+@app.get("/pokemon_ordered_by", response_model=list[Pokemon])
+def pokemon_ordered_by(order_by: str = "id", ascendente: bool = True):
     valid_fields = Pokemon.__fields__.keys()
 
     if order_by not in valid_fields:
-        raise HTTPException(status_code=400, detail=f"No existe el campo use: {list(valid_fields)}")
+        raise HTTPException(status_code=400, detail=f"Campo inválido. Use: {list(valid_fields)}")
 
-    ordenado = sorted(lista_pokemon, key=lambda x: x[order_by], reverse= not ascendente)
+    try:
+        ordenado = sorted(
+            lista_pokemon, 
+            key=lambda x: getattr(x, order_by), 
+            reverse=not ascendente
+        )
+        return ordenado
 
-    return ordenado
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error interno: {str(e)}")
 
 
     
