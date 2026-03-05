@@ -8,7 +8,7 @@ class Pokemon(BaseModel):
     type: str
 
     def leavePokeball(self) -> str:
-        return f"{self.name}, Yo te elijo"
+        return f"{self.name}, Yo te elijo Vida: {self.life} Ataque: {self.attack}"
 
     def atacar(self, target_pokemon: "Pokemon") -> str:
         target_pokemon.life -= self.attack

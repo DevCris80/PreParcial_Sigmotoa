@@ -53,5 +53,8 @@ datos_pokemon = [
     {"id": 50, "name": "Diglett", "attack": 55.0, "life": 10.0, "type": "Ground"}
 ]
 
-# Convertimos los diccionarios en objetos Pokemon de una vez
-lista_pokemon: list[Pokemon] = [Pokemon(**p) for p in datos_pokemon]
+# Multiplicamos la vida por 5 para que duren más los combates
+lista_pokemon: list[Pokemon] = [
+    Pokemon(**{**p, "life": p["life"] * 5}) 
+    for p in datos_pokemon
+]
