@@ -2,8 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 from model import Pokemon, MessageBattle
-
-lista_pokemon: list[Pokemon] = []
+from db import lista_pokemon
 
 app = FastAPI()
 
@@ -29,23 +28,21 @@ def show_pokemon_by_id(id: int):
 def pokemon_battle(pokemon_1: str, pokemon_2: str):
     p1_obj = show_one_pokemon(pokemon_1)
     p2_obj = show_one_pokemon(pokemon_2)
-
-    hp1 = p1_obj.life
-    hp2 = p2_obj.life
     
     historial: list[MessageBattle] = []
     turno = 1
 
-    while hp1 > 0 and hp2 > 0:
-        hp2 -= p1_obj.attack
-        historial.append(
-            MessageBattle(
-            turno=turno, 
-            mensaje=f"{p1_obj.name} ataca a {p2_obj.name}. Vida de {p2_obj.name}: {max(0, hp2)}"
+    historial.append(MessageBattle(turno=0, mensaje=p1_obj.leavePokeball()))
+    historial.append(MessageBattle(turno=0, mensaje=p2_obj.leavePokeball()))
+    while p1_obj.life > 0 and p2_obj.life > 0:
+        ataque_1 = p1_obj.attack(p2_obj)
+        historial.append(MessageBattle(
+            turno=turno,
+            mensaje=ataque_1
             )
         )
         
-        if hp2 <= 0:
+        if p2_obj.life <= 0:
             historial.append(
                 MessageBattle(
                     turno=turno, 
@@ -54,15 +51,14 @@ def pokemon_battle(pokemon_1: str, pokemon_2: str):
             )
             break
 
-        hp1 -= p2_obj.attack
-        historial.append(
-            MessageBattle(
-            turno=turno, 
-            mensaje=f"{p2_obj.name} contraataca a {p1_obj.name}. Vida de {p1_obj.name}: {max(0, hp1)}"
+        ataque_2 = p2_obj.attack(p1_obj)
+        historial.append(MessageBattle(
+            turno=turno,
+            mensaje=ataque_2
             )
         )
 
-        if hp1 <= 0:
+        if p1_obj.life <= 0:
             historial.append(
                 MessageBattle(
                     turno=turno,
