@@ -10,7 +10,7 @@ class Pokemon(BaseModel):
     def leavePokeball(self) -> str:
         return f"{self.name}, Yo te elijo"
 
-    def attack(self, target_pokemon: "Pokemon") -> str:
+    def atacar(self, target_pokemon: "Pokemon") -> str:
         target_pokemon.life -= self.attack
         target_pokemon.life = max(0, target_pokemon.life) 
         

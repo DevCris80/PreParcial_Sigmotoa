@@ -36,7 +36,7 @@ def pokemon_battle(pokemon_1: str, pokemon_2: str):
     historial.append(MessageBattle(turno=0, mensaje=p1_obj.leavePokeball()))
     historial.append(MessageBattle(turno=0, mensaje=p2_obj.leavePokeball()))
     while p1_obj.life > 0 and p2_obj.life > 0:
-        ataque_1 = p1_obj.attack(p2_obj)
+        ataque_1 = p1_obj.atacar(p2_obj)
         historial.append(MessageBattle(
             turno=turno,
             mensaje=ataque_1
@@ -52,7 +52,7 @@ def pokemon_battle(pokemon_1: str, pokemon_2: str):
             )
             break
 
-        ataque_2 = p2_obj.attack(p1_obj)
+        ataque_2 = p2_obj.atacar(p1_obj)
         historial.append(MessageBattle(
             turno=turno,
             mensaje=ataque_2
